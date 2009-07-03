@@ -49,6 +49,7 @@ extern "C" {
 */
 #ifdef SDL_PROTOTYPES_ONLY
 struct SDL_SysWMinfo;
+struct SDL_SysIMinfo;
 #else
 
 /* This is the structure for custom window manager events */
@@ -110,6 +111,14 @@ struct SDL_SysWMinfo
             Window wmwindow;    /* The X11 managed input window */
         } x11;
     } info;
+};
+
+/* The UNIX custom input method information structure.
+ */
+struct SDL_SysIMinfo {
+       SDL_version version;
+       XIM xim;                        /* The X11 input method */
+       XIC *xic;                       /* The X11 input method context */
 };
 
 #elif defined(SDL_VIDEO_DRIVER_NANOX)
@@ -211,6 +220,7 @@ struct SDL_SysWMinfo
 #endif /* SDL_PROTOTYPES_ONLY */
 
 typedef struct SDL_SysWMinfo SDL_SysWMinfo;
+typedef struct SDL_SysIMinfo SDL_SysIMinfo;
 
 /* Function prototypes */
 /**
@@ -233,6 +243,23 @@ typedef struct SDL_SysWMinfo SDL_SysWMinfo;
 extern DECLSPEC SDL_bool SDLCALL SDL_GetWindowWMInfo(SDL_WindowID windowID,
                                                      SDL_SysWMinfo * info);
 
+/**
+ * \fn SDL_bool SDL_GetIMInfo (SDL_SysIMinfo * info)
+ *
+ * \brief This function allows access to the input method information.
+ *
+ * \param info This structure must be initialized with the SDL version, and is then filled in with the input method information.
+ *
+ * \return SDL_TRUE if the function is implemented and the version member of the 'info' struct is valid, SDL_FALSE otherwise.
+ *
+ * You typically use this function like this:
+ * \code
+ * SDL_SysIMinfo info;
+ * SDL_VERSION(&info.version);
+ * if ( SDL_GetIMInfo(&info) ) { ... }
+ * \endcode
+ */
+extern DECLSPEC SDL_bool SDLCALL SDL_GetIMInfo(SDL_SysIMinfo * info);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus

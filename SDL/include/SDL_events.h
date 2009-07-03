@@ -480,6 +480,18 @@ extern DECLSPEC void SDLCALL SDL_FilterEvents(SDL_EventFilter filter,
 #define SDL_ENABLE	 1
 extern DECLSPEC Uint8 SDLCALL SDL_EventState(Uint8 type, int state);
 
+/*
+ * Set IM position.
+ */
+typedef enum {
+       SDL_IM_ENABLE = 1,
+       SDL_IM_FLIP
+} SDL_imvalue;
+
+extern DECLSPEC int SDL_SetIMPosition( int x, int y );
+extern DECLSPEC char *SDL_SetIMValues(SDL_imvalue value, ...);
+extern DECLSPEC char *SDL_GetIMValues(SDL_imvalue value, ...);
+extern DECLSPEC int SDL_FlushIMString(void *buffer);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus

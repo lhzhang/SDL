@@ -33,6 +33,9 @@
 #if !SDL_JOYSTICK_DISABLED
 #include "../joystick/SDL_joystick_c.h"
 #endif
+#if !SDL_INPUTMETHOD_DISABLED
+#include <stdarg.h>
+#endif
 
 /* Public data -- the event filter */
 SDL_EventFilter SDL_EventOK = NULL;
@@ -553,6 +556,109 @@ SDL_SendSysWMEvent(SDL_SysWMmsg * message)
     }
     /* Update internal event state */
     return (posted);
+}
+
+/* 
+ */
+int SDL_SetIMPosition(int x, int y)
+{
+#ifdef ENABLE_INPUTMETHOD
+       SDL_VideoDevice *video = current_video;
+       SDL_VideoDevice *this  = current_video;
+
+       if (video) {
+           return video->SetIMPosition(this, x, y);
+       }
+#endif
+       return -1;
+}
+
+/* 
+ */
+char *
+SDL_SetIMValues(SDL_imvalue value, ...)
+{
+#ifdef ENABLE_INPUTMETHOD
+       va_list ap;
+       SDL_imvalue t1;
+       static char *ret = 0;
+       int t2;
+       SDL_VideoDevice *video = current_video;
+       SDL_VideoDevice *this  = current_video;
+
+       if (video && value) {
+           va_start(ap, value);
+           t2 = va_arg(ap, int);
+           ret = video->SetIMValues(this, value, t2);
+           if (ret)
+               return ret;
+           while ((t1 = va_arg(ap, SDL_imvalue)) != 0) {
+               t2 = va_arg(ap, int);
+               ret = video->SetIMValues(this, t1, t2);
+               if (ret)
+                   return ret;
+           }
+       }
+       else {
+           // TODO:
+           SDL_SetError("Video or argument is NULL");
+           return "Video or argument is NULL";
+       }
+       va_end(ap);
+#endif
+       return NULL;
+}
+
+/* 
+ */
+char *
+SDL_GetIMValues(SDL_imvalue value, ...)
+{
+#ifdef ENABLE_INPUTMETHOD
+       va_list ap;
+       SDL_imvalue t1;
+       static char *ret = 0;
+       static int *t2;
+       SDL_VideoDevice *video = current_video;
+       SDL_VideoDevice *this  = current_video;
+
+       if (video && value) {
+           va_start(ap, value);
+           t2 = va_arg(ap, int*);
+           ret = video->GetIMValues(this, value, t2);
+           if (ret)
+               return ret;
+           while ((t1 = va_arg(ap, SDL_imvalue)) != 0) {
+                   t2 = va_arg(ap, int*);
+                   ret = video->GetIMValues(this, t1, t2);
+                   if (ret)
+                       return ret;
+           }
+       }
+       else {
+           // TODO:
+           SDL_SetError("video or argument is NULL");
+           return "video or argument is NULL";
+       }
+       va_end(ap);
+#endif
+       return NULL;
+}
+
+/*
+ */
+int 
+SDL_FlushIMString(void *buffer)
+{
+#ifdef ENABLE_INPUTMETHOD
+       SDL_VideoDevice *video = current_video;
+       SDL_VideoDevice *this  = current_video;
+
+       if (video) {
+           return video->FlushIMString(this, buffer);
+       }
+#endif
+       return 0;
 }
 
 /* vi: set ts=4 sw=4 expandtab: */

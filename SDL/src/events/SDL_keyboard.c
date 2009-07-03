@@ -801,16 +801,25 @@ SDL_SendKeyboardKey(int index, Uint8 state, SDL_scancode scancode)
         return 0;
     }
 
+#ifdef ENABLE_INPUTMETHOD
+    if (keysym->sym != SDLK_UNKNOWN) {
+#endif
+
     /* Drop events that don't change state */
     if (keyboard->keystate[scancode] == state) {
 #if 0
         printf("Keyboard event didn't change state - dropped!\n");
 #endif
+
         return 0;
     }
 
     /* Update internal keyboard state */
     keyboard->keystate[scancode] = state;
+
+#ifdef ENABLE_INPUTMETHOD
+    }
+#endif
 
     /* Post the event, if desired */
     posted = 0;

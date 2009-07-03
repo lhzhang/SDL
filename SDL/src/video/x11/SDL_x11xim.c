@@ -21,17 +21,31 @@
 */
 #include "SDL_config.h"
 
-#ifndef _SDL_x11events_h
-#define _SDL_x11events_h
+#include "SDL_x11xim.h"
+#include "../../events/SDL_keyboard_c.h"
 
-extern void X11_PumpEvents(_THIS);
-extern void X11_SuspendScreenSaver(_THIS);
+int X11_GetIMInfo(_THIS, SDL_SysIMinfo *info)
+{
 
-extern int X11_SetIMPosition(_THIS, int x, int y);
-extern char *X11_SetIMValues(_THIS, SDL_imvalue value, int alt);
-extern char *X11_GetIMValues(_THIS, SDL_imvalue value, int *alt);
-extern int X11_FlushIMString(_THIS, void *buffer);
-
-#endif /* _SDL_x11events_h */
+       if ( info->version.major <= SDL_MAJOR_VERSION ) {
+               if ( SDL_VERSIONNUM(info->version.major,
+                       info->version.minor,
+                       info->version.patch) >=
+                       SDL_VERSIONNUM(1, 2, 8) ) {
+#ifdef ENABLE_INPUTMETHOD
+                   info->xim = IM_Context.SDL_XIM;
+                   info->xic = &IM_Context.SDL_XIC;
+#else
+                   info->xim = NULL;
+                   info->xic = NULL;
+#endif
+               }
+                       return(1);
+       } else {
+               SDL_SetError("Application not compiled with SDL %d.%d\n",
+                       SDL_MAJOR_VERSION, SDL_MINOR_VERSION);
+               return(-1);
+       }
+}
 
 /* vi: set ts=4 sw=4 expandtab: */

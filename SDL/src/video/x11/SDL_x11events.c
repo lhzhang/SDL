@@ -41,12 +41,20 @@ X11_DispatchEvent(_THIS)
     SDL_zero(xevent);           /* valgrind fix. --ryan. */
     XNextEvent(videodata->display, &xevent);
 
-    /* filter events catchs XIM events and sends them to the correct
+#ifdef ENABLE_INPUTMETHOD
+    if (IM_Context.ic_focus)
+#endif
+
+    /* filter events catches XIM events and sends them to the correct
        handler */
     if (XFilterEvent(&xevent, None) == True) {
 #if 0
         printf("Filtered event type = %d display = %d window = %d\n",
                xevent.type, xevent.xany.display, xevent.xany.window);
+#endif
+
+#ifdef ENABLE_INPUTMETHOD
+        SDL_ResetKeyboard();
 #endif
         return;
     }
@@ -133,6 +141,12 @@ X11_DispatchEvent(_THIS)
                 XSetICFocus(data->ic);
             }
 #endif
+#ifdef ENABLE_IM_EVENT
+            if (IM_Context.SDL_XIC) {
+                XSetICFocus(IM_Context.SDL_XIC);
+                IM_Context.ic_focus = 1;
+            }
+#endif
         }
         break;
 
@@ -141,10 +155,16 @@ X11_DispatchEvent(_THIS)
 #ifdef DEBUG_XEVENTS
             printf("FocusOut!\n");
 #endif
-            SDL_SetKeyboardFocus(videodata->keyboard, 0);
+            SDL_SetKeyboardFocus(videodata->keyboard, xevent.xkeymap.key_vector);
 #ifdef X_HAVE_UTF8_STRING
             if (data->ic) {
                 XUnsetICFocus(data->ic);
+            }
+#endif
+#ifdef ENABLE_IM_EVENT
+            if (IM_Context.SDL_XIC) {
+                XUnsetICFocus(IM_Context.SDL_XIC);
+                IM_Context.ic_focus = 0;
             }
 #endif
         }
@@ -155,9 +175,7 @@ X11_DispatchEvent(_THIS)
 #ifdef DEBUG_XEVENTS
             printf("KeymapNotify!\n");
 #endif
-            /* FIXME:
-               X11_SetKeyboardState(SDL_Display, xevent.xkeymap.key_vector);
-             */
+            X11_SetKeyboardState(SDL_Display, xevent.xkeymap.key_vector);
         }
         break;
 

@@ -234,6 +234,12 @@ AC_HELP_STRING([--enable-events], [Enable the events subsystem [[default=yes]]])
 if test x$enable_events != xyes; then
     AC_DEFINE(SDL_EVENTS_DISABLED)
 fi
+AC_ARG_ENABLE(inputmethod,
+AC_HELP_STRING([--enable-inputmethod, [Enable input method subsystem [default=yes]]),
+              , enable_inputmethod=yes)
+if test x$enable_im_event = xyes; then
+    AC_DEFINE(SDL_INPUTMETHOD_DISABLED)
+fi
 AC_ARG_ENABLE(joystick,
 AC_HELP_STRING([--enable-joystick], [Enable the joystick subsystem [[default=yes]]]),
               , enable_joystick=yes)

@@ -3067,4 +3067,18 @@ SDL_GetWindowWMInfo(SDL_WindowID windowID, struct SDL_SysWMinfo *info)
     return (_this->GetWindowWMInfo(_this, window, info));
 }
 
+/* Get platform dependent input method information */
+int 
+SDL_GetIMInfo (SDL_SysIMinfo *info)
+{
+       SDL_VideoDevice *video = current_video;
+       SDL_VideoDevice *this  = current_video;
+
+       if (video && video->GetIMInfo) {
+           return (video->GetIMInfo(this, info));
+       } else {
+           return (0);
+       }
+}
+
 /* vi: set ts=4 sw=4 expandtab: */

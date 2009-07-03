@@ -21,58 +21,14 @@
 */
 #include "SDL_config.h"
 
-#ifndef _SDL_x11video_h
-#define _SDL_x11video_h
-
-#include "../SDL_sysvideo.h"
+#ifndef _SDL_x11xim_h
+#define _SDL_x11xim_h
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 
-#if SDL_VIDEO_DRIVER_X11_XINERAMA
-#include "../Xext/extensions/Xinerama.h"
-#endif
-#if SDL_VIDEO_DRIVER_X11_XRANDR
-#include <X11/extensions/Xrandr.h>
-#endif
-#if SDL_VIDEO_DRIVER_X11_VIDMODE
-#include "../Xext/extensions/xf86vmode.h"
-#endif
-#if SDL_VIDEO_DRIVER_X11_XINPUT
-#include <X11/extensions/XInput.h>
-#endif
-#if SDL_VIDEO_DRIVER_X11_SCRNSAVER
-#include <X11/extensions/scrnsaver.h>
-#endif
-
-#include "SDL_x11dyn.h"
-
-#include "SDL_x11events.h"
-#include "SDL_x11gamma.h"
-#include "SDL_x11keyboard.h"
-#include "SDL_x11modes.h"
-#include "SDL_x11mouse.h"
-#include "SDL_x11opengl.h"
-#include "SDL_x11window.h"
-
-/* Private display data */
-
-typedef struct SDL_VideoData
-{
-    Display *display;
-    char *classname;
-    XIM im;
-    Uint32 screensaver_activity;
-    int numwindows;
-    SDL_WindowData **windowlist;
-    int windowlistlength;
-    int keyboard;
-    Atom WM_DELETE_WINDOW;
-    SDL_scancode key_layout[256];
-} SDL_VideoData;
-
-/* IM context */
+/* Private input method data */
 struct {
     XIM SDL_XIM;
     XIC SDL_XIC;
@@ -101,8 +57,28 @@ struct {
     XFontSet fontset;
 } IM_Context;
 
-extern SDL_bool X11_UseDirectColorVisuals();
+#define IM_Context            (this->hidden->IM_Context)
+/*
+#define SDL_XIM               (this->hidden->IM_Context.SDL_XIM)
+#define SDL_XIC               (this->hidden->IM_Context.SDL_XIC)
+#define im_multi_byte_buffer  (this->hidden->IM_Context.string.im_multi_byte_buffer)
+#define im_wide_char_buffer   (this->hidden->IM_Context.string.im_wide_char_buffer)
+#define im_buffer_len         (this->hidden->IM_Context.im_buffer_len)
+#define im_compose_len        (this->hidden->IM_Context.im_compose_len)
+#define ic_focus              (this->hidden->IM_Context.ic_focus)
+#define bEnable_OverTheSpot   (this->hidden->IM_Context.bEnable_OverTheSpot)
+#define bEnable_OnTheSpot     (this->hidden->IM_Context.bEnable_OnTheSpot)
+#define bEnable_Root          (this->hidden->IM_Context.bEnable_Root)
+#define preedit_attr_orig     (this->hidden->IM_Context.preedit_attr_orig)
+#define im_style_orig         (this->hidden->IM_Context.im_style_orig)   
+#define preedit_attr_now      (this->hidden->IM_Context.preedit_attr_now)
+#define im_style_now          (this->hidden->IM_Context.im_style_now)   
+#define fontset               (this->hidden->IM_Context.fontset)   
+*/
 
-#endif /* _SDL_x11video_h */
+/* Functions to IM */
+extern int X11_GetIMInfo(_THIS, SDL_SysIMinfo *info);
+
+#endif /* _SDL_x11xim_h */
 
 /* vi: set ts=4 sw=4 expandtab: */

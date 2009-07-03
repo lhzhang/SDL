@@ -278,6 +278,25 @@ struct SDL_VideoDevice
     void (*SuspendScreenSaver) (_THIS);
 
     /* * * */
+    /* Input Method functions
+     */
+
+    /* set IM position to (x,y) */
+    int (*SetIMPosition) (_THIS, int x, int y);
+    
+    /* set IM value */
+    char *(*SetIMValues) (_THIS, SDL_imvalue value, int alt);
+
+     /* get IM value */
+    char *(*GetIMValues) (_THIS, SDL_imvalue value, int *alt);
+
+    /* get IM string */
+    int (*FlushIMString) (_THIS, void *buffer);
+
+    /* get IM handle information */
+    int (*GetIMInfo) (_THIS, SDL_SysIMinfo *info);
+
+    /* * * */
     /* Data common to all drivers */
     SDL_bool suspend_screensaver;
     int num_displays;
