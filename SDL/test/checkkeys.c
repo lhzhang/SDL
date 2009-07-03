@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 #include "SDL.h"
 
@@ -102,6 +103,11 @@ main(int argc, char *argv[])
     SDL_Event event;
     int done;
     Uint32 videoflags;
+
+    if ( !setlocale(LC_CTYPE, "")) { 
+        fprintf(stderr, "Couldn't set locale parameters.\n");
+        return (1);
+    }
 
     /* Initialize SDL */
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
